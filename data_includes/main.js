@@ -181,7 +181,7 @@ newTrial("Consent",
 .setOption("hideProgressBar", true) 
 
 
-//Prolific ID
+//Ask for the Prolific ID
 PennController("ProlificID_trial",   
     newText("Please fill in your Prolific ID below, so we can process your payment")
         .center()
@@ -202,7 +202,7 @@ PennController("ProlificID_trial",
     )
     .log( "ProlificID" , getVar("ProlificID") )
 
-// Welcome page 2
+// Instructions on how to set up the webcam
 PennController("WebcamSetUp",
     newText("WebcamSetUpText", "The next pages will help you set up the audio and webcam. The webcam will be set up in a simple calibration procedure. During this calibration, you will see a video of your webcam stream. Again, we will not save any recordings of this video stream. Please make sure your face is fully visible, and that you sit centrally in front of your webcam by following the instructions in the picture below.<br><br>You can start the calibration procedure by clicking on the start button that will appear on the middle of the screen.<br><br>In the calibration procedure, you will see eight buttons on your screen. Please click on all these buttons and follow your cursor closely with your eyes. Once you've clicked on all buttons, a new button will appear in the middle of the screen. Please click on this button and <b>look at it for three seconds</b> so the algorithm can check whether it's well calibrated.<br><br>In case calibration fails, the last step will be repeated. <br><br><b>If calibration fails three times in a row</b>, you won't be able to complete the experiment. If this happens, please click on the link that will be provided to you, so you will be redirected to another experiment that doesn't require a webcam. This way, you can still earn your reward on Prolific.<br><br> Press <b>SPACE</b> to continue to the next trial")
     ,
@@ -271,7 +271,8 @@ PennController("WebcamSetUp",
 )
         .noHeader()
         .setOption("hideProgressBar", true)
-        
+
+// If calibration failed to often, participants will be redirected to another experiment (below is a dummy link)
 newTrial("FailedCalibrationLink",
     getVar("Failed")
         .test.is("yes")
@@ -292,7 +293,7 @@ newTrial("FailedCalibrationLink",
             ,
             SendResults()
             ,
-            newText("FailedCalibration","Unfortunately, the calibration failed again. It seems that the webcam is not able to pick up your eye movements. Please visit this link to be redirected to another survey that doesn't require the webcam: <a href='https://farm.pcibex.net/p/PnPizs/'>https://farm.pcibex.net/p/PnPizs/</a> This way, you can still earn your payment on Prolific (please ignore the pop-up window that may appear, you can click on 'leave'). </p> </strong> <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
+            newText("FailedCalibration","Unfortunately, the calibration failed again. It seems that the webcam is not able to pick up your eye movements. Please visit this link to be redirected to another survey that doesn't require the webcam: <b>dummy link</b> This way, you can still earn your payment on Prolific (please ignore the pop-up window that may appear, you can click on 'leave'). </p> </strong> <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
                 .print("Center at 50%", "Middle at 50%")
             , 
             newButton("waitforever").wait()
@@ -495,6 +496,7 @@ Template("Practise.csv", row =>
     .log( "ViewportHeight"		, window.innerHeight 		) // Screensize: heigth     
 )
 
+// Page that tells the participants that the experiment will begin. 
 newTrial("EndOfPractise", 
     //show cursor     
     newFunction( ()=>{
@@ -642,6 +644,7 @@ Template("Block1.csv", row =>
     .log( "ViewportHeight"		, window.innerHeight 		) // Screensize: heigth     
 )
 
+// Break between the blocks
 PennController("BlinkBreak",
    //show cursor     
    newFunction( ()=>{
@@ -667,7 +670,7 @@ PennController("BlinkBreak",
 .setOption("hideProgressBar", true) 
 
 
-// Audio set-up
+// Set-up the audio again
 PennController("AudioSetUp2",
     newText("AudioInstructions", "You can use this audio recording, in case you need to adjust the volume again for the second block. Feel free to replay this sentence as often as you need.")
     ,
@@ -808,6 +811,7 @@ Template("Block2.csv", row =>
     .log( "ViewportHeight"		, window.innerHeight 		) // Screensize: heigth     
 )
 
+// Finally, some questionnaires
 newTrial("WebcamQuestionnairePage",
     //show cursor     
     newFunction( ()=>{
@@ -858,13 +862,11 @@ newTrial("WebcamQuestionnairePage",
         )
 ) 
 
+// Send the results to the server
 PennController.SendResults("Send");
 
+// Final page
 newTrial("FinalPage",
-    newHtml("downloadspeed", "speedtest.html")
-        .settings.log()
-        .print("center at 50%", "middle at 50%")
-    ,
     newTimer(100)
         .start()
         .wait()

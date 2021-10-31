@@ -1,13 +1,16 @@
 PennController.ResetPrefix(null) // Shorten command names (keep this)
 PennController.DebugOff() // Don't show the debug window
 
-// PHP script that receives, stores (and will also output) the eye-tracking data
-//EyeTrackerURL("PUT YOUR OWN URL HERE")
+// Resources are hosted on a distant server
 AddHost("https://users.ugent.be/~mslim/VW_DWR_Stimuli/images/");
 
+// PHP script that receives, stores (and will also output) the eye-tracking data
+//EyeTrackerURL("PUT YOUR OWN URL HERE")
+
+// Sequence that determines the order of the elements in this experiment
 Sequence("Checks", "Welcome", "Consent", "ProlificID_trial", "WebcamSetUp", "CalibrationSetUp", "Instructions", randomize("Trials"), "QuestionnairePage", "Send", "Final")
 
-// Check for L1
+// Check for L1 (if the participant indicates that English is not their L1, they won't able to continue to the experiment)
 PennController("Checks",
     newImage("logo", "logo_UGent_EN_RGB_2400_color.png")
         .size("10vw")       
@@ -74,7 +77,7 @@ PennController("Checks",
 )
 .setOption("hideProgressBar", true) 
 
-// Welcome text
+// Welcome page
 PennController("Welcome",
     newImage("logo", "logo_UGent_EN_RGB_2400_color.png")
         .size("10vw")       
@@ -97,6 +100,7 @@ PennController("Welcome",
 )
 .setOption("hideProgressBar", true) 
 
+// Consent page
 PennController("Consent",
     newImage("logo", "logo_UGent_EN_RGB_2400_color.png")
         .size("10vw")       
@@ -119,7 +123,7 @@ PennController("Consent",
 )
 .setOption("hideProgressBar", true) 
 
-//Prolific ID
+//Ask for Prolific ID
 PennController("ProlificID_trial",
     newImage("logo", "logo_UGent_EN_RGB_2400_color.png")
         .size("10vw")       
@@ -209,6 +213,7 @@ newTrial("Instructions",
     .global()   
 )
 
+// Start the trials of the experiment
 PennController.Template("FixationTrials.csv",
     row => PennController("Trials", 
         // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for helping us construct this command)
@@ -315,6 +320,7 @@ PennController.Template("FixationTrials.csv",
     .log( "ViewportHeight", window.innerHeight ) // Screensize: heigth          
 )
 
+// Post-experimental questionnaire
 PennController("QuestionnairePage",
           //show cursor     
    newFunction( ()=>{
@@ -346,9 +352,10 @@ PennController("QuestionnairePage",
               )
     .setOption("hideProgressBar", true)          
 
-
+// Send the results to the server
 PennController.SendResults("Send");
 
+// Final page
 newTrial("Final",    
     exitFullscreen()
     ,

@@ -21,7 +21,7 @@ AddHost("https://users.ugent.be/~mslim/VW_Stimuli_onserver/");
 var showProgressBar = false;
 
 // Sequence of the elements in the experiment
-Sequence("Preload", "Loading", "WebcamCheck", "ChromeCheck", "L1Check", "Welcome", "Consent", "ProlificID_trial", "WebcamSetUp", "FailedCalibrationLink", "AudioSetUp", "AudioCheck", "Instructions", "PractiseSession", "EndOfPractise", "Counter", randomize("Block1"), "BlinkBreak", "AudioSetUp2", randomize("Block2"), "LanguageQuestionnairePage", "WebcamQuestionnairePage", "Send", "FinalPage")
+Sequence("Preload", "Loading", "WebcamCheck", "ChromeCheck", "L1Check", "Welcome", "Consent", "WebcamSetUp", "FailedCalibrationLink", "AudioSetUp", "AudioCheck", "Instructions", "PractiseSession", "EndOfPractise", "Counter", randomize("Block1"), "BlinkBreak", "AudioSetUp2", randomize("Block2"), "LanguageQuestionnairePage", "WebcamQuestionnairePage", "Send", "FinalPage")
 
 // Check preload of required files:
 CheckPreloaded("Preload")
@@ -151,8 +151,7 @@ newTrial("L1Check",
         )
 )
 
-
-// We present a welcome screen.
+// Here, a welcome screen is presented to the participant.
 newTrial("Welcome",
     newHtml("downloadspeed", "speedtest.html") // This is a brief download speed test (written in HTML). This test is repeated throughout the experiment. 
         .settings.log()
@@ -169,7 +168,7 @@ newTrial("Welcome",
         .global()
         .log()
     ,
-    newText("WelcomeText", "Welcome and thank you for participating in this experiment.<br><br>Cognitive scientists often record eye movements to study human behavior, because eye movements tell a lot about how we divide our attention and how we make decisions. Typically, expensive eye-tracking devices are used to record eye movements. The aim of this experiment is to test whether we could also use webcams to achieve this goal. <br><br>The task is very simple and should take roughly 25-30 minutes to complete (there will be a break in the middle). All you have to do is listen to short sentences while four images are presented on your computer screen. Feel free to look anywhere, as long as it is on your computer screen. Your webcam will be used to follow your eye movements on the task. <br><br>We will <b>not</b> collect any video data or any other type of data that may reveal your identity. We only collect data on where on the screen your eyes are looking during the experiment.<br><br>Unfortunately, the experiment may not work for everyone: Sometimes the webcam is not able to pick up your eye movements (for a variety of possible reasons). We will test in a moment whether the experiment works for you. In case it doesn’t, you will be redirected to another experiment in which you will judge English sentences (which doesn't require a webcam). This way, you can still earn your reward on Prolific.<br><br>It is important that you are in a well-lit and quiet environment, otherwise the webcam may not be able to pick up your eye movements. Please turn off any devices or applications that may distract you during this task (such as your mobile phone or your email application) and please close other websites that you may have open.<br><br>If you have any questions about this experiment, feel free to get in touch with me (Mieke Slim) via email: mieke.slim@ugent.be <br><br> Press <b>SPACE</b> to continue. <br><br>The next pages will appear in fullscreen. <b>Please do not close the fullscreen for the remainder of this experiment. </b>")
+    newText("WelcomeText", "Welcome and thank you for participating in this experiment.<br><br>Cognitive scientists often record eye movements to study human behavior, because eye movements tell a lot about how we divide our attention and how we make decisions. Typically, expensive eye-tracking devices are used to record eye movements. The aim of this experiment is to test whether we could also use webcams to achieve this goal. <br><br>The task is very simple and should take roughly 25-30 minutes to complete (there will be a break in the middle). All you have to do is listen to short sentences while four images are presented on your computer screen. Feel free to look anywhere, as long as it is on your computer screen. Your webcam will be used to follow your eye movements on the task. <br><br>We will <b>not</b> collect any video data or any other type of data that may reveal your identity. We only collect data on where on the screen your eyes are looking during the experiment.<br><br>Unfortunately, the experiment may not work for everyone: Sometimes the webcam is not able to pick up your eye movements (for a variety of possible reasons). We will test in a moment whether the experiment works for you. In case it doesn’t, you will be redirected to another experiment in which you will judge English sentences (which doesn't require a webcam). <br><br> It is important that you are in a well-lit and quiet environment, otherwise the webcam may not be able to pick up your eye movements. Please turn off any devices or applications that may distract you during this task (such as your mobile phone or your email application) and please close other websites that you may have open.<br><br>If you have any questions about this experiment, feel free to get in touch with me (Mieke Slim) via email: mieke.slim@ugent.be <br><br> Press <b>SPACE</b> to continue. <br><br>The next pages will appear in fullscreen. <b>Please do not close the fullscreen for the remainder of this experiment. </b>")
     ,
     newCanvas("InstructionsCanvas", "60vw" , "20vh")
         .add(0,0, getText("WelcomeText"))
@@ -179,8 +178,7 @@ newTrial("Welcome",
         .wait()
 )
 
-
-//Consent text, written in HTML -- this is a relatively standard UGent one
+// The informed consent is presented to the participant. The form is written in HTML -- this is a relatively standard UGent one
 newTrial("Consent",
     newHtml("consent_form", "consent.html")
         .center()
@@ -198,9 +196,9 @@ newTrial("Consent",
     fullscreen()
 )
 
-// Instructions on how to set up the webcam and calibrate the eyetracker
+// Instructions on how to set up the webcam and calibrate the eyetracker are shown.
 PennController("WebcamSetUp",
-    newText("WebcamSetUpText", "The next pages will help you set up the audio and webcam. The webcam will be set up in a simple calibration procedure. During this calibration, you will see a video of your webcam stream. Again, we will not save any recordings of this video stream. Please make sure your face is fully visible, and that you sit centrally in front of your webcam by following the instructions in the picture below.<br><br>You can start the calibration procedure by clicking on the start button that will appear on the middle of the screen.<br><br>In the calibration procedure, you will see eight buttons on your screen. Please click on all these buttons and follow your cursor closely with your eyes. Once you've clicked on all buttons, a new button will appear in the middle of the screen. Please click on this button and <b>look at it for three seconds</b> so the algorithm can check whether it's well calibrated.<br><br>In case calibration fails, the last step will be repeated. <br><br><b>If calibration fails three times in a row</b>, you won't be able to complete the experiment. If this happens, please click on the link that will be provided to you, so you will be redirected to another experiment that doesn't require a webcam. This way, you can still earn your reward on Prolific.<br><br> Press <b>SPACE</b> to continue to the next trial")
+    newText("WebcamSetUpText", "The next pages will help you set up the audio and webcam. The webcam will be set up in a simple calibration procedure. During this calibration, you will see a video of your webcam stream. Again, we will not save any recordings of this video stream. Please make sure your face is fully visible, and that you sit centrally in front of your webcam by following the instructions in the picture below.<br><br>You can start the calibration procedure by clicking on the start button that will appear on the middle of the screen.<br><br>In the calibration procedure, you will see eight buttons on your screen. Please click on all these buttons and follow your cursor closely with your eyes. Once you've clicked on all buttons, a new button will appear in the middle of the screen. Please click on this button and <b>look at it for three seconds</b> so the algorithm can check whether it's well calibrated.<br><br>In case calibration fails, the last step will be repeated. <br><br><b>If calibration fails three times in a row</b>, you won't be able to complete the experiment. If this happens, please click on the link that will be provided to you, so you will be redirected to another experiment that doesn't require a webcam. <br><br> Press <b>SPACE</b> to continue to the next trial")
     ,
     newImage("Instructions", "Instructions.png")
         .size("60vw")
@@ -230,7 +228,8 @@ PennController("WebcamSetUp",
     getEyeTracker("tracker")
         .showFeedback()
         .calibrate()
-        .test.score(50) // The calibration treshold is set at 50. They have three attempts to reach this treshold. 
+    //    .test.score(50) // The calibration treshold is set at 50. They have three attempts to reach this treshold. 
+    .test.score(1)
             .failure(
                 newText("FailedCalibration1","Unfortunately, the calibration failed. Make sure to look at the button in the centre of the screen for three seconds. <br> Press space to try again! <br> Attempts left: 2")
                     .print("center at 50%", "middle at 50%")
@@ -242,7 +241,8 @@ PennController("WebcamSetUp",
                 ,
                 getEyeTracker("tracker")
                     .calibrate()
-                    .test.score(50)
+    //                .test.score(50)
+                    .test.score(1)
                         .failure(
                             newText("FailedCalibration2","Unfortunately, the calibration failed. Make sure to look at the button in the centre of the screen for three seconds. <br> Press space to try again! <br> Attempts left: 1")
                                 .print("center at 50%", "middle at 50%")
@@ -254,7 +254,8 @@ PennController("WebcamSetUp",
                             ,
                             getEyeTracker("tracker")
                                 .calibrate()
-                                .test.score(50)
+                            //    .test.score(50)
+                            .test.score(1)
                                     .failure(
                                     getVar("Failed")
                                         .set("yes")
@@ -352,7 +353,7 @@ newTrial("Instructions",
     getHtml("downloadspeed")
         .remove()
     ,
-    newText("TaskInstructions", "<p>You're all set to start the experiment! You will hear a couple of short sentences while you look at the screen. Feel free to look anywhere, as long as it's on the screen.<br><br>Before each trial, you will see a button in the middle of your screen. Click on this button and look at it for three seconds. The webcam will check whether it is still calibrated. If it is, the trial will automatically start after three seconds. Otherwise, the calibration procedure will be repeated. <br><br>During the trials, you don't need to click on anything: Just listen and watch! <br><br>We’ll first start with two practice trials, so you will know how the experiment works. Then, we will continue to the experiment. This experiment should take roughly 20 minutes to complete, and there will be a break in the middle.<br><br>Please make sure you keep your head as still as possible throughout the experiment (of course, with the exception of the break)<br><br><b>If you experience any technical difficulties</b> during this experiment (for instance, resources not loading or the experiment freezing), don't hesitate to get in touch with me either via Prolific's message function or via email (mieke.slim@ugent.be)!")
+    newText("TaskInstructions", "<p>You're all set to start the experiment! You will hear a couple of short sentences while you look at the screen. Feel free to look anywhere, as long as it's on the screen.<br><br>Before each trial, you will see a button in the middle of your screen. Click on this button and look at it for three seconds. The webcam will check whether it is still calibrated. If it is, the trial will automatically start after three seconds. Otherwise, the calibration procedure will be repeated. <br><br>During the trials, you don't need to click on anything: Just listen and watch! <br><br>We’ll first start with two practice trials, so you will know how the experiment works. Then, we will continue to the experiment. This experiment should take roughly 20 minutes to complete, and there will be a break in the middle.<br><br>Please make sure you keep your head as still as possible throughout the experiment (of course, with the exception of the break)<br><br><b>If you experience any technical difficulties</b> during this experiment (for instance, resources not loading or the experiment freezing), don't hesitate to get in touch with me (mieke.slim@ugent.be)!")
     ,
     newCanvas("myCanvas", 800 , 300)
         .settings.add(0,0, getText("TaskInstructions"))
@@ -390,6 +391,19 @@ Template("Practise.csv", row => // The practice trial info is retrieved from a c
             getEyeTracker("tracker")._element.counts._Ys = [];
         }).call()  
         ,  
+        // Show the mouse cursor (needed if calibration fails)
+        newFunction( ()=>{
+            $("body").css({
+                width: '100vw',
+                height: '100vh',
+                cursor: 'default'
+           });
+        }).call()
+        ,
+        getEyeTracker("tracker")
+            .test.score(1) //.calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
+            .log()  // log the calibration scores
+        ,
         // Hide the mouse cursor
         newFunction( ()=>{
             $("body").css({
@@ -398,10 +412,6 @@ Template("Practise.csv", row => // The practice trial info is retrieved from a c
                 cursor: 'none'
            });
         }).call()
-        ,
-        getEyeTracker("tracker")
-            .calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
-            .log()  // log the calibration scores
         ,
         defaultImage.size("20vh", "20vh") // Images are this size (note that they are a square)
         ,
@@ -503,7 +513,6 @@ newTrial("EndOfPractise",
         .wait()
 )
 
-
 // We use the counter to assign lists to participants. The counter is increased here (so if people cannot continue to the experiment due to calibration issues or because they quit, we will hopfully still get a similar number of participants in each list)
 SetCounter("Counter", "inc", 1);
 
@@ -533,6 +542,19 @@ Template("Block1.csv", row => // Again, the trial info is stored in a csv file
             getEyeTracker("tracker")._element.counts._Ys = [];
         }).call()  
         ,  
+        // Show the mouse cursor (needed if calibration fails)
+        newFunction( ()=>{
+            $("body").css({
+                width: '100vw',
+                height: '100vh',
+                cursor: 'default'
+           });
+        }).call()
+        ,
+        getEyeTracker("tracker")
+            .calibrate(1) //.calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
+            .log()  // log the calibration scores
+        ,
         // Hide the mouse cursor
         newFunction( ()=>{
             $("body").css({
@@ -541,10 +563,6 @@ Template("Block1.csv", row => // Again, the trial info is stored in a csv file
                 cursor: 'none'
            });
         }).call()
-        ,
-        getEyeTracker("tracker")
-            .calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
-            .log()  // log the calibration scores
         ,
         defaultImage.size("20vh", "20vh") // Images are this size (note that they are a square)
         ,
@@ -623,7 +641,6 @@ Template("Block1.csv", row => // Again, the trial info is stored in a csv file
     .log( "ViewportHeight"      , window.innerHeight        ) // Screensize: heigth     
 )
 
-
 // Break between the blocks
 PennController("BlinkBreak",
    //show cursor     
@@ -635,7 +652,7 @@ PennController("BlinkBreak",
            });
         }).call()
     ,     
-    newText("BlinkBreakText", "This was the first block! Feel free to take a five minute break. Please make sure that this break is not much longer than five minutes, so you won't time out on Prolific.<br><br>Click on the button below to continue to the final block of the experiment.<br><br> Make sure you are centrally seated before your webcam and to keep your head still throughout the remainder of this experiment.")
+    newText("BlinkBreakText", "This was the first block! Feel free to take a five minute break. Please make sure that this break is not much longer than five minutes. <br><br> Click on the button below to continue to the final block of the experiment.<br><br> Make sure you are centrally seated before your webcam and to keep your head still throughout the remainder of this experiment.")
     ,           
     newCanvas( "myCanvas", "60vw" , "60vh")
         .settings.add(0,0, getText("BlinkBreakText"))       
@@ -647,7 +664,6 @@ PennController("BlinkBreak",
     ,
     fullscreen()
 )
-
 
 // Set-up the audio again
 PennController("AudioSetUp2",
@@ -665,7 +681,7 @@ PennController("AudioSetUp2",
         .wait( newEyeTracker("tracker").test.ready() )
 )
 
-//Trials: Block 2
+// And we preent the trials in Block 2 - Like Block 1, this section is a copy from the practice trials (with the exeption of the csv file name)
 Template("Block2.csv", row =>
     newTrial("Block2",
          newHtml("downloadspeed", "speedtest.html")
@@ -690,7 +706,20 @@ Template("Block2.csv", row =>
             getEyeTracker("tracker")._element.counts._Xs = [];
             getEyeTracker("tracker")._element.counts._Ys = [];
         }).call()  
-        ,  
+        ,
+        // Show the mouse cursor (needed if calibration fails)
+        newFunction( ()=>{
+            $("body").css({
+                width: '100vw',
+                height: '100vh',
+                cursor: 'default'
+           });
+        }).call()
+        ,
+        getEyeTracker("tracker")
+            .calibrate(1) //.calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
+            .log()  // log the calibration scores
+        ,
         // Hide the mouse cursor
         newFunction( ()=>{
             $("body").css({
@@ -699,10 +728,6 @@ Template("Block2.csv", row =>
                 cursor: 'none'
            });
         }).call()
-        ,
-        getEyeTracker("tracker")
-            .calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
-            .log()  // log the calibration scores
         ,
         defaultImage.size("20vh", "20vh") // Images are this size (note that they are a square)
         ,
@@ -781,8 +806,7 @@ Template("Block2.csv", row =>
     .log( "ViewportHeight"      , window.innerHeight        ) // Screensize: heigth     
 )
 
-
-// Finally, some questionnaires
+// Now that the task is completed, we present two post-experimental questionnaires to the participants. These questionnaires are written in HTML.
 newTrial("WebcamQuestionnairePage",
     //show cursor     
     newFunction( ()=>{
@@ -807,6 +831,7 @@ newTrial("WebcamQuestionnairePage",
         )
 ) 
 
+// And questionnaire 2.
 newTrial("WebcamQuestionnairePage",
     newHtml("downloadspeed", "speedtest.html")
         .settings.log()
@@ -833,10 +858,10 @@ newTrial("WebcamQuestionnairePage",
         )
 ) 
 
-// Send the results to the server
+// Send the results to the server (!!!)
 PennController.SendResults("Send");
 
-// Final page
+// And we show a clozing page.
 newTrial("FinalPage",
     newTimer(100)
         .start()
@@ -847,7 +872,7 @@ newTrial("FinalPage",
     ,
     exitFullscreen()
     ,
-    newText("Final","This is the end of the experiment. <strong> Please verify your participation on Prolific by clicking on this link: <p><a href='https://app.prolific.co/submissions/complete?cc=4E2A5428'>https://app.prolific.co/submissions/complete?cc=4E2A5428</a></p> </strong> <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
+    newText("Final","This is the end of the experiment. <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
     ,
     newCanvas("myCanvas", "60vw" , "60vh")
         .settings.add(0,0, getText("Final"))

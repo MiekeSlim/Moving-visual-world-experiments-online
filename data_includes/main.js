@@ -1,8 +1,17 @@
+// Experiment code for Slim & Hartsuiker's Experiment 2
+// Author: Mieke Sarah Slim
+
+// This expriment is a replication of Dijkgraaf, Hartsuiker, and Duyck's (2017) visual world experiment. 
+// The participants passively listen to sentences while they look at four images, arranged in the four quadrants of the display.
+
+// Please note that this script requires some understanding of how PCIbex works.
+// If you want to use this script, it is highly recommended to first study the PCIbex documentation, go through both the basic and advanced tutorials, and study the how-to guide on collecting eye tracking data written by the PCIbex developers (all avalable on https://doc.pcibex.net/).
+
 PennController.ResetPrefix(null) // Shorten command names (keep this)
 PennController.DebugOff() // Don't show the debug window
 
 // Resources are hosted on a distant server. 
-//NOTE: It is highly recommended to store the resources in ZIP files (https://doc.pcibex.net/how-to-guides/managing-resources/). Unfortunately, the UGent servers do not allow this functionality.
+// NOTE: It is highly recommended to store the resources in ZIP files (https://doc.pcibex.net/how-to-guides/managing-resources/). Unfortunately, the UGent servers do not allow this functionality.
 AddHost("https://users.ugent.be/~mslim/VW_Stimuli_onserver/");
 
 // PHP script that receives, stores (and will also output) the eye-tracking data (see https://doc.pcibex.net/how-to-guides/collecting-eyetracking-data/)
@@ -10,18 +19,20 @@ AddHost("https://users.ugent.be/~mslim/VW_Stimuli_onserver/");
 
 // We don't want to show the progress bar in this experiment. We can hide the progress bar (which is shown by default) with the following code:
 var showProgressBar = false;
+
 // Sequence of the elements in the experiment
 Sequence("Preload", "Loading", "WebcamCheck", "ChromeCheck", "L1Check", "Welcome", "Consent", "ProlificID_trial", "WebcamSetUp", "FailedCalibrationLink", "AudioSetUp", "AudioCheck", "Instructions", "PractiseSession", "EndOfPractise", "Counter", randomize("Block1"), "BlinkBreak", "AudioSetUp2", randomize("Block2"), "LanguageQuestionnairePage", "WebcamQuestionnairePage", "Send", "FinalPage")
 
 // Check preload of required files:
 CheckPreloaded("Preload")
 
-// Below is a fake loading page. I added this because the first page was often a bit glitchy, and this way, there is more loading time.
+// Below is a fake loading page. I added this because the first page was often a bit glitchy, and this way, there is more loading time. Note that this is a quick-'n-dirty fix though.
 newTrial("Loading",
     newText("Loading", "Loading...")
         .center()
         .print()
     ,
+    // After a 1000 ms, a continue button is printed.
     newTimer(1000)
         .start()
         .wait()
@@ -44,6 +55,7 @@ newTrial("Loading",
 newTrial("WebcamCheck",
     newText("PermissionWebcam", "Three brief questions before we begin:<br><br>We need to use your webcam to record where you are looking on the screen. We will <b>not</b> record any video or collect any other type of data that may reveal your identity. Do you give us permission to use your webcam?")
     ,
+    // They indicate their response with a keyboard press
     newText("NoPermission", "No, I do not give my permission<br>Press the 'J' key")
     ,
     newText("YesPermission", "Yes, I give my permission,<br>Press the 'F' key")
@@ -54,10 +66,13 @@ newTrial("WebcamCheck",
         .add("center at 80%", "top at 80%", getText("NoPermission"))
         .print("center at 50%", "top at 25%") 
     ,
+    // Implement the keyboard response keys
     newKey("yesno", "FJ")
         .wait()
     ,
+    // And check which key was pressed
     getKey("yesno")
+        // If they select yes ('F'), the experiment continues. If they select no 'J', they are send to a page that says that they cannot participate in the experiment.
         .test.pressed("F")
         .failure(
             getCanvas("ChecksCanvas")
@@ -67,11 +82,12 @@ newTrial("WebcamCheck",
                 .add("center at 50%", "top at 10%", newText("Unfortunately you cannot participate in this study. Please close the experiment by closing the browser (you can ignore possible pop-up screens)"))
                 .print("center at 50%", "top at 25%") 
             ,
-            newButton("waitforever")
+            newButton("waitforever") // The button is never printed, so they're stuck on this page.
                 .wait()
         )
 )
 
+// The following section works the same as the 'WebcamCheck' section
 newTrial("ChromeCheck",
     newText("ChromeCheckText", "Three brief questions before we begin:<br><br>This study only works well if you are using the Google Chrome browser on a laptop or desktop computer (so not on a mobile phone or tablet). Are you currently using <b> Google Chrome Desktop </b>?")
     ,
@@ -103,6 +119,7 @@ newTrial("ChromeCheck",
         )
 )
 
+// The following section works the same as the 'WebcamCheck' section
 newTrial("L1Check",
     newText("L1CheckText", "Three brief questions before we begin:<br><br>To participate in this study, it is required that you are a <b>native speaker of English</b>. Are you a native speaker of English?")
     ,
@@ -135,9 +152,9 @@ newTrial("L1Check",
 )
 
 
-// Welcome text
+// We present a welcome screen.
 newTrial("Welcome",
-    newHtml("downloadspeed", "speedtest.html") // This is a brief download speed test. This test is repeated throughout the experiment.
+    newHtml("downloadspeed", "speedtest.html") // This is a brief download speed test (written in HTML). This test is repeated throughout the experiment. 
         .settings.log()
         .print("center at 50%", "middle at 50%")
     ,
@@ -161,10 +178,9 @@ newTrial("Welcome",
     newKey("next", " ")
         .wait()
 )
-.setOption("hideProgressBar", true) 
 
 
-//Consent text:
+//Consent text, written in HTML -- this is a relatively standard UGent one
 newTrial("Consent",
     newHtml("consent_form", "consent.html")
         .center()
@@ -181,31 +197,8 @@ newTrial("Consent",
     ,
     fullscreen()
 )
-.setOption("hideProgressBar", true) 
 
-
-//Ask for the Prolific ID
-PennController("ProlificID_trial",   
-    newText("Please fill in your Prolific ID below, so we can process your payment")
-        .center()
-        .print()
-    ,
-    newTextInput("ProlificID")
-        .center()
-        .print()
-    ,
-    newButton("Continue")
-        .center()
-        .print()
-        .wait()
-    ,
-    newVar("ProlificID")
-        .settings.global()
-        .set( getTextInput("ProlificID") )
-    )
-    .log( "ProlificID" , getVar("ProlificID") )
-
-// Instructions on how to set up the webcam
+// Instructions on how to set up the webcam and calibrate the eyetracker
 PennController("WebcamSetUp",
     newText("WebcamSetUpText", "The next pages will help you set up the audio and webcam. The webcam will be set up in a simple calibration procedure. During this calibration, you will see a video of your webcam stream. Again, we will not save any recordings of this video stream. Please make sure your face is fully visible, and that you sit centrally in front of your webcam by following the instructions in the picture below.<br><br>You can start the calibration procedure by clicking on the start button that will appear on the middle of the screen.<br><br>In the calibration procedure, you will see eight buttons on your screen. Please click on all these buttons and follow your cursor closely with your eyes. Once you've clicked on all buttons, a new button will appear in the middle of the screen. Please click on this button and <b>look at it for three seconds</b> so the algorithm can check whether it's well calibrated.<br><br>In case calibration fails, the last step will be repeated. <br><br><b>If calibration fails three times in a row</b>, you won't be able to complete the experiment. If this happens, please click on the link that will be provided to you, so you will be redirected to another experiment that doesn't require a webcam. This way, you can still earn your reward on Prolific.<br><br> Press <b>SPACE</b> to continue to the next trial")
     ,
@@ -233,10 +226,11 @@ PennController("WebcamSetUp",
     ,
     fullscreen()
     ,
+    //  Launch the calibration procedure
     getEyeTracker("tracker")
         .showFeedback()
         .calibrate()
-        .test.score(50)
+        .test.score(50) // The calibration treshold is set at 50. They have three attempts to reach this treshold. 
             .failure(
                 newText("FailedCalibration1","Unfortunately, the calibration failed. Make sure to look at the button in the centre of the screen for three seconds. <br> Press space to try again! <br> Attempts left: 2")
                     .print("center at 50%", "middle at 50%")
@@ -272,10 +266,8 @@ PennController("WebcamSetUp",
                     )
                 )
 )
-        .noHeader()
-        .setOption("hideProgressBar", true)
 
-// If calibration failed to often, participants will be redirected to another experiment (below is a dummy link)
+// If calibration failed three times, the participants were redirected to another experiment (below is a dummy link)
 newTrial("FailedCalibrationLink",
     getVar("Failed")
         .test.is("yes")
@@ -296,20 +288,19 @@ newTrial("FailedCalibrationLink",
             ,
             SendResults()
             ,
-            newText("FailedCalibration","Unfortunately, the calibration failed again. It seems that the webcam is not able to pick up your eye movements. Please visit this link to be redirected to another survey that doesn't require the webcam: <b>dummy link</b> This way, you can still earn your payment on Prolific (please ignore the pop-up window that may appear, you can click on 'leave'). </p> </strong> <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
+            newText("FailedCalibration","Unfortunately, the calibration failed again. It seems that the webcam is not able to pick up your eye movements. Please visit this link to be redirected to another survey that doesn't require the webcam: <b>dummy link</b> (please ignore the pop-up window that may appear, you can click on 'leave'). </p> </strong> <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
                 .print("Center at 50%", "Middle at 50%")
             , 
             newButton("waitforever").wait()
             )
     
     )
-    .setOption("hideProgressBar", true)
     
-// Audio set-up
+// Now, we set up the audio, allowing participants to adjust their volume
 PennController("AudioSetUp",
     newText("AudioInstructions", "Now that you have set up and calibrated the webcam, let’s set up the audio. In this experiment, you will hear a number of sentences. You can play one of the sentences that will be used in the experiment by clicking the play button below. Please use this audio recording to adjust your volume. Feel free to replay this sentence as often as you need. Once you’re ready, you can go to the next page.")
     ,
-    newAudio("Volume_sentence", "practice_engels_Sarah_Mary_hits_a_boy_2_ok.wav")
+    newAudio("Volume_sentence", "practice_engels_Sarah_Mary_hits_a_boy_2_ok.wav") // This is an unused practice recording
     ,
     newCanvas( "myCanvas", "60vw" , "60vh")
         .settings.add(0,0, getText("AudioInstructions"))
@@ -321,9 +312,8 @@ PennController("AudioSetUp",
         .print("center at 50%", "top at 70%") 
         .wait()
 )
-    .setOption("hideProgressBar", true) 
-    
-// Audio check
+
+// Now we want to check whether the participants indeed hear the audio correctly. They hear a new sentence, and are asked to write that sentence down. 
 newTrial("AudioCheck",
     newText("AudioCheckUp", "Now that the audio volume is set, please listen to the audio file presented below. After you listened to the sentence, please type in the sentence you heard in the field that appears.<br><br>Please listen carefully, because <b>you can only listen to the sentence once.</b><br><br> Feel free to move your head if you want to look at your keyboard while typing. ")
     ,
@@ -331,13 +321,13 @@ newTrial("AudioCheck",
         .settings.add(0,0, getText("AudioCheckUp"))
         .print("center at 50%", "top at 25%")
     ,    
-    newAudio("Check_sentence", "practice_engels_Sarah_Mary_has_a_diamond_ok.wav")
+    newAudio("Check_sentence", "practice_engels_Sarah_Mary_has_a_diamond_ok.wav") // Another unused practice recording.
         .center()
         .print("center at 50%", "top at 40%")
         .wait()
         .remove()
     ,
-    newTextInput("AudioCheckInput", "Type in the sentence you heard")
+    newTextInput("AudioCheckInput", "Type in the sentence you heard") // Text input to type in the sentence. 
             .center()
             .log()
             .lines(0)
@@ -348,9 +338,8 @@ newTrial("AudioCheck",
         .print("center at 50%", "top at 45%")
         .wait()
 )
-    .setOption("hideProgressBar", true) 
 
-// Experiment instructions:
+// And we present the task instructions. 
 newTrial("Instructions", 
     newHtml("downloadspeed", "speedtest.html")
         .settings.log()
@@ -374,12 +363,9 @@ newTrial("Instructions",
         .print("center at 50%", "top at 70%")
         .wait()
 )
-    .setOption("hideProgressBar", true) 
- 
-
-        
-//Trials: Practise
-Template("Practise.csv", row =>
+  
+// We start with two practice trials
+Template("Practise.csv", row => // The practice trial info is retrieved from a csv file
     newTrial("PractiseSession",
         newHtml("downloadspeed", "speedtest.html")
             .settings.log()
@@ -392,7 +378,7 @@ Template("Practise.csv", row =>
         getHtml("downloadspeed")
             .remove()
         ,
-        // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for helping us construct this command)
+        // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for writing this function)
         newEyeTracker("tracker",1).callback( function (x,y) {
             if (this != getEyeTracker("tracker")._element.elements[0]) return;
             getEyeTracker("tracker")._element.counts._Xs.push(x);
@@ -404,43 +390,6 @@ Template("Practise.csv", row =>
             getEyeTracker("tracker")._element.counts._Ys = [];
         }).call()  
         ,  
-        //show cursor     
-        newFunction( ()=>{
-            $("body").css({
-                width: '100vw',
-                height: '100vh',
-                cursor: 'default'
-           });
-        }).call()
-        ,
-        getEyeTracker("tracker")
-            .calibrate(50)  // Make sure that the tracker is still calibrated
-            .log()  // log the calibration scores
-        ,
-        defaultImage.size("20vh", "20vh")
-        ,
-        images = [row.image1,row.image2,row.image3,row.image4].sort(v=>Math.random()-Math.random())
-        ,
-        newCanvas("TopLeft", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[0]))
-            .print("center at 25%", "middle at 25%")
-            .log()
-        ,
-        newCanvas("BottomLeft", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[1]))
-            .print("center at 25%", "middle at 75%")
-            .log()
-        ,
-        newCanvas("TopRight", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[2]))
-            .print("center at 75%", "middle at 25%")
-            .log()
-        ,
-        newCanvas("BottomRight", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[3]))
-            .print("center at 75%", "middle at 75%")
-            .log()
-        ,  
         // Hide the mouse cursor
         newFunction( ()=>{
             $("body").css({
@@ -450,8 +399,37 @@ Template("Practise.csv", row =>
            });
         }).call()
         ,
-        newTimer(2200).start().wait()
+        getEyeTracker("tracker")
+            .calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
+            .log()  // log the calibration scores
         ,
+        defaultImage.size("20vh", "20vh") // Images are this size (note that they are a square)
+        ,
+        images = [row.image1,row.image2,row.image3,row.image4].sort(v=>Math.random()-Math.random()) // We positioning of the four images is random. This function is needed for the randomization. It makes an array of the four picture files, and shuffles this array.
+        ,
+        newCanvas("TopLeft", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[0])) // retrieve the first image from the shuffled array
+            .print("center at 25%", "middle at 25%")
+            .log() 
+        ,
+        newCanvas("BottomLeft", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[1])) // retrieve the second image from the shuffled array
+            .print("center at 25%", "middle at 75%")
+            .log() 
+        ,
+        newCanvas("TopRight", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[2])) // retrieve the third image from the shuffled array
+            .print("center at 75%", "middle at 25%")
+            .log() 
+        ,
+        newCanvas("BottomRight", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[3])) // retrieve the fourth image from the shuffled array
+            .print("center at 75%", "middle at 75%")
+            .log() 
+        ,
+        newTimer(2200).start().wait() // 2200 ms preview time
+        ,
+        // start the eyetracker
         getEyeTracker("tracker")
         // We track the Canvas: making them bigger allows us to capture look-estimates slightly off the images themselves
             .add(   // We track the Canvas elements   
@@ -463,43 +441,46 @@ Template("Practise.csv", row =>
             .log()
             .start()
         ,
+        // play the audio
         newAudio("sentence", row.audio)
             .log()
             .play()
             .wait()
         ,
+        // add 500 ms overspill time after the audio has finished playing
         newTimer(500).start().wait()
         ,     
-        getEyeTracker("tracker").stop() // Stop now to prevent collecting unnecessary data
+        getEyeTracker("tracker").stop() // Stop the eyetracker to prevent collecting unnecessary data
         ,
+        // check whether the audio has indeed stopped playing
         getAudio("sentence").wait("first")
         ,
+        // 200 ms overspill time 
         newTimer(200).start().wait()
         ,
+        // relaunch fullscreen (which only has an effect if the participant closed the fullscreen for whatever reason)
         fullscreen()
         )
-    .setOption("hideProgressBar", true)
-    .noHeader()     
+    // save the required trial info in the results file 
     .log("Subject"              , getVar("Subject")         )
-    .log( "ProlificID"          , getVar("ProlificID")      )
     .log( "image1"              , row.image1                )
     .log( "image2"              , row.image2                )            
     .log( "image3"              , row.image3                )   
     .log( "image4"              , row.image4                )
-    .log( "toplefttimage"       , images[0]                 )
-    .log( "bottomleftimage"     , images[1]                 )
-    .log( "toprightimage"       , images[2]                 )
-    .log( "bottomrightimage"    , images[3]                 )
+    .log( "toplefttimage"       , images[0]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "bottomleftimage"     , images[1]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "toprightimage"       , images[2]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "bottomrightimage"    , images[3]                 ) // save which image is printed here (since the array was shuffled)
     .log( "sentence"            , row.audio                 )           
     .log( "stimulustype"        , row.stimulustype          )  
     .log( "stimuluscondition"   , row.stimuluscondition     )     
     .log( "list"                , row.list                  )
     .log( "stimulusset"         , row.pair                  )
-    .log( "ViewportWidth" 		, window.innerWidth	 		) // Screensize: width
-    .log( "ViewportHeight"		, window.innerHeight 		) // Screensize: heigth     
+    .log( "ViewportWidth"       , window.innerWidth         ) // Screensize: width
+    .log( "ViewportHeight"      , window.innerHeight        ) // Screensize: heigth     
 )
 
-// Page that tells the participants that the experiment will begin. 
+// Page that tells the participants that the practice trials are over and the experiment will begin. 
 newTrial("EndOfPractise", 
     //show cursor     
     newFunction( ()=>{
@@ -521,14 +502,15 @@ newTrial("EndOfPractise",
         .print("center at 50%", "top at 40%")
         .wait()
 )
-    .setOption("hideProgressBar", true) 
 
+
+// We use the counter to assign lists to participants. The counter is increased here (so if people cannot continue to the experiment due to calibration issues or because they quit, we will hopfully still get a similar number of participants in each list)
 SetCounter("Counter", "inc", 1);
 
-//Trials: Block 1
-Template("Block1.csv", row =>
+// And we start the trials in Block 1 - Note that this section is a copy from the practice trials (with the exeption of the csv file name)
+Template("Block1.csv", row => // Again, the trial info is stored in a csv file
     newTrial("Block1",
-        newHtml("downloadspeed", "speedtest.html")
+         newHtml("downloadspeed", "speedtest.html")
             .settings.log()
             .print("center at 50%", "middle at 50%")
         ,
@@ -539,7 +521,7 @@ Template("Block1.csv", row =>
         getHtml("downloadspeed")
             .remove()
         ,
-        // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for helping us construct this command)
+        // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for writing this function)
         newEyeTracker("tracker",1).callback( function (x,y) {
             if (this != getEyeTracker("tracker")._element.elements[0]) return;
             getEyeTracker("tracker")._element.counts._Xs.push(x);
@@ -551,43 +533,6 @@ Template("Block1.csv", row =>
             getEyeTracker("tracker")._element.counts._Ys = [];
         }).call()  
         ,  
-        //show cursor     
-        newFunction( ()=>{
-            $("body").css({
-                width: '100vw',
-                height: '100vh',
-                cursor: 'default'
-           });
-        }).call()
-        ,
-        getEyeTracker("tracker")
-            .calibrate(50)  // Make sure that the tracker is still calibrated
-            .log()  // log the calibration scores
-        ,
-        defaultImage.size("20vh", "20vh")
-        ,
-        images = [row.image1,row.image2,row.image3,row.image4].sort(v=>Math.random()-Math.random())
-        ,
-        newCanvas("TopLeft", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[0]))
-            .print("center at 25%", "middle at 25%")
-            .log()
-        ,
-        newCanvas("BottomLeft", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[1]))
-            .print("center at 25%", "middle at 75%")
-            .log()
-        ,
-        newCanvas("TopRight", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[2]))
-            .print("center at 75%", "middle at 25%")
-            .log()
-        ,
-        newCanvas("BottomRight", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[3]))
-            .print("center at 75%", "middle at 75%")
-            .log()
-        ,  
         // Hide the mouse cursor
         newFunction( ()=>{
             $("body").css({
@@ -597,8 +542,37 @@ Template("Block1.csv", row =>
            });
         }).call()
         ,
-        newTimer(2200).start().wait()
+        getEyeTracker("tracker")
+            .calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
+            .log()  // log the calibration scores
         ,
+        defaultImage.size("20vh", "20vh") // Images are this size (note that they are a square)
+        ,
+        images = [row.image1,row.image2,row.image3,row.image4].sort(v=>Math.random()-Math.random()) // We positioning of the four images is random. This function is needed for the randomization. It makes an array of the four picture files, and shuffles this array.
+        ,
+        newCanvas("TopLeft", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[0])) // retrieve the first image from the shuffled array
+            .print("center at 25%", "middle at 25%")
+            .log() 
+        ,
+        newCanvas("BottomLeft", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[1])) // retrieve the second image from the shuffled array
+            .print("center at 25%", "middle at 75%")
+            .log() 
+        ,
+        newCanvas("TopRight", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[2])) // retrieve the third image from the shuffled array
+            .print("center at 75%", "middle at 25%")
+            .log() 
+        ,
+        newCanvas("BottomRight", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[3])) // retrieve the fourth image from the shuffled array
+            .print("center at 75%", "middle at 75%")
+            .log() 
+        ,
+        newTimer(2200).start().wait() // 2200 ms preview time
+        ,
+        // start the eyetracker
         getEyeTracker("tracker")
         // We track the Canvas: making them bigger allows us to capture look-estimates slightly off the images themselves
             .add(   // We track the Canvas elements   
@@ -610,42 +584,45 @@ Template("Block1.csv", row =>
             .log()
             .start()
         ,
+        // play the audio
         newAudio("sentence", row.audio)
             .log()
             .play()
             .wait()
         ,
+        // add 500 ms overspill time after the audio has finished playing
         newTimer(500).start().wait()
         ,     
-        getEyeTracker("tracker").stop() // Stop now to prevent collecting unnecessary data
+        getEyeTracker("tracker").stop() // Stop the eyetracker to prevent collecting unnecessary data
         ,
+        // check whether the audio has indeed stopped playing
         getAudio("sentence").wait("first")
         ,
+        // 200 ms overspill time 
         newTimer(200).start().wait()
         ,
+        // relaunch fullscreen (which only has an effect if the participant closed the fullscreen for whatever reason)
         fullscreen()
         )
-    .setOption("hideProgressBar", true)
-    .noHeader()     
+    // save the required trial info in the results file 
     .log("Subject"              , getVar("Subject")         )
-    .log( "ProlificID"          , getVar("ProlificID")      )
     .log( "image1"              , row.image1                )
     .log( "image2"              , row.image2                )            
     .log( "image3"              , row.image3                )   
     .log( "image4"              , row.image4                )
-    .log( "toplefttimage"       , images[0]                 )
-    .log( "bottomleftimage"     , images[1]                 )
-    .log( "toprightimage"       , images[2]                 )
-    .log( "bottomrightimage"    , images[3]                 )
+    .log( "toplefttimage"       , images[0]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "bottomleftimage"     , images[1]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "toprightimage"       , images[2]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "bottomrightimage"    , images[3]                 ) // save which image is printed here (since the array was shuffled)
     .log( "sentence"            , row.audio                 )           
     .log( "stimulustype"        , row.stimulustype          )  
     .log( "stimuluscondition"   , row.stimuluscondition     )     
     .log( "list"                , row.list                  )
-    .log( "group"               , row.Group                 )
     .log( "stimulusset"         , row.pair                  )
-    .log( "ViewportWidth" 		, window.innerWidth	 		) // Screensize: width
-    .log( "ViewportHeight"		, window.innerHeight 		) // Screensize: heigth     
+    .log( "ViewportWidth"       , window.innerWidth         ) // Screensize: width
+    .log( "ViewportHeight"      , window.innerHeight        ) // Screensize: heigth     
 )
+
 
 // Break between the blocks
 PennController("BlinkBreak",
@@ -670,7 +647,6 @@ PennController("BlinkBreak",
     ,
     fullscreen()
 )
-.setOption("hideProgressBar", true) 
 
 
 // Set-up the audio again
@@ -688,12 +664,11 @@ PennController("AudioSetUp2",
         .print("center at 50%", "top at 60%") 
         .wait( newEyeTracker("tracker").test.ready() )
 )
-.setOption("hideProgressBar", true) 
 
 //Trials: Block 2
 Template("Block2.csv", row =>
     newTrial("Block2",
-        newHtml("downloadspeed", "speedtest.html")
+         newHtml("downloadspeed", "speedtest.html")
             .settings.log()
             .print("center at 50%", "middle at 50%")
         ,
@@ -704,7 +679,7 @@ Template("Block2.csv", row =>
         getHtml("downloadspeed")
             .remove()
         ,
-        // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for helping us construct this command)
+        // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for writing this function)
         newEyeTracker("tracker",1).callback( function (x,y) {
             if (this != getEyeTracker("tracker")._element.elements[0]) return;
             getEyeTracker("tracker")._element.counts._Xs.push(x);
@@ -716,45 +691,6 @@ Template("Block2.csv", row =>
             getEyeTracker("tracker")._element.counts._Ys = [];
         }).call()  
         ,  
-        //show cursor     
-        newFunction( ()=>{
-            $("body").css({
-                width: '100vw',
-                height: '100vh',
-                cursor: 'default'
-           });
-        }).call()
-        ,
-        getEyeTracker("tracker")
-            .calibrate(50)  // Make sure that the tracker is still calibrated
-            .log()  // log the calibration scores
-        ,
-        defaultImage.size("20vh", "20vh")
-        ,
-        images = [row.image1,row.image2,row.image3,row.image4].sort(v=>Math.random()-Math.random())
-        ,
-        images = [row.image1,row.image2,row.image3,row.image4].sort(v=>Math.random()-Math.random())
-        ,
-        newCanvas("TopLeft", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[0]))
-            .print("center at 25%", "middle at 25%")
-            .log()
-        ,
-        newCanvas("BottomLeft", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[1]))
-            .print("center at 25%", "middle at 75%")
-            .log()
-        ,
-        newCanvas("TopRight", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[2]))
-            .print("center at 75%", "middle at 25%")
-            .log()
-        ,
-        newCanvas("BottomRight", "50vw", "50vh")
-            .add("center at 50%", "middle at 50%", newImage(images[3]))
-            .print("center at 75%", "middle at 75%")
-            .log()
-        ,  
         // Hide the mouse cursor
         newFunction( ()=>{
             $("body").css({
@@ -764,8 +700,37 @@ Template("Block2.csv", row =>
            });
         }).call()
         ,
-        newTimer(2200).start().wait()
+        getEyeTracker("tracker")
+            .calibrate(50)  // Each trial starts with a calibration check to see whether the treshold of 50 is still reached. 
+            .log()  // log the calibration scores
         ,
+        defaultImage.size("20vh", "20vh") // Images are this size (note that they are a square)
+        ,
+        images = [row.image1,row.image2,row.image3,row.image4].sort(v=>Math.random()-Math.random()) // We positioning of the four images is random. This function is needed for the randomization. It makes an array of the four picture files, and shuffles this array.
+        ,
+        newCanvas("TopLeft", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[0])) // retrieve the first image from the shuffled array
+            .print("center at 25%", "middle at 25%")
+            .log() 
+        ,
+        newCanvas("BottomLeft", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[1])) // retrieve the second image from the shuffled array
+            .print("center at 25%", "middle at 75%")
+            .log() 
+        ,
+        newCanvas("TopRight", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[2])) // retrieve the third image from the shuffled array
+            .print("center at 75%", "middle at 25%")
+            .log() 
+        ,
+        newCanvas("BottomRight", "50vw", "50vh")
+            .add("center at 50%", "middle at 50%", newImage(images[3])) // retrieve the fourth image from the shuffled array
+            .print("center at 75%", "middle at 75%")
+            .log() 
+        ,
+        newTimer(2200).start().wait() // 2200 ms preview time
+        ,
+        // start the eyetracker
         getEyeTracker("tracker")
         // We track the Canvas: making them bigger allows us to capture look-estimates slightly off the images themselves
             .add(   // We track the Canvas elements   
@@ -777,42 +742,45 @@ Template("Block2.csv", row =>
             .log()
             .start()
         ,
+        // play the audio
         newAudio("sentence", row.audio)
             .log()
             .play()
             .wait()
         ,
+        // add 500 ms overspill time after the audio has finished playing
         newTimer(500).start().wait()
         ,     
-        getEyeTracker("tracker").stop() // Stop now to prevent collecting unnecessary data
+        getEyeTracker("tracker").stop() // Stop the eyetracker to prevent collecting unnecessary data
         ,
+        // check whether the audio has indeed stopped playing
         getAudio("sentence").wait("first")
         ,
+        // 200 ms overspill time 
         newTimer(200).start().wait()
         ,
+        // relaunch fullscreen (which only has an effect if the participant closed the fullscreen for whatever reason)
         fullscreen()
         )
-    .setOption("hideProgressBar", true)
-    .noHeader()     
+    // save the required trial info in the results file 
     .log("Subject"              , getVar("Subject")         )
-    .log( "ProlificID"          , getVar("ProlificID")      )
     .log( "image1"              , row.image1                )
     .log( "image2"              , row.image2                )            
     .log( "image3"              , row.image3                )   
     .log( "image4"              , row.image4                )
-    .log( "toplefttimage"       , images[0]                 )
-    .log( "bottomleftimage"     , images[1]                 )
-    .log( "toprightimage"       , images[2]                 )
-    .log( "bottomrightimage"    , images[3]                 )
+    .log( "toplefttimage"       , images[0]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "bottomleftimage"     , images[1]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "toprightimage"       , images[2]                 ) // save which image is printed here (since the array was shuffled)
+    .log( "bottomrightimage"    , images[3]                 ) // save which image is printed here (since the array was shuffled)
     .log( "sentence"            , row.audio                 )           
     .log( "stimulustype"        , row.stimulustype          )  
     .log( "stimuluscondition"   , row.stimuluscondition     )     
     .log( "list"                , row.list                  )
-    .log( "group"               , row.Group                 )
     .log( "stimulusset"         , row.pair                  )
-    .log( "ViewportWidth" 		, window.innerWidth	 		) // Screensize: width
-    .log( "ViewportHeight"		, window.innerHeight 		) // Screensize: heigth     
+    .log( "ViewportWidth"       , window.innerWidth         ) // Screensize: width
+    .log( "ViewportHeight"      , window.innerHeight        ) // Screensize: heigth     
 )
+
 
 // Finally, some questionnaires
 newTrial("WebcamQuestionnairePage",
@@ -887,4 +855,3 @@ newTrial("FinalPage",
     ,     
     newButton("waitforever").wait() // Not printed: wait on this page forever
 )
-    .setOption("hideProgressBar", true)

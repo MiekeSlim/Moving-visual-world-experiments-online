@@ -7,9 +7,20 @@ The experiments are programmed and implemented in *PennController for IBEX* (*PC
 
 
 ## Importing the files into the PCIbex Farm
-These scripts can be run in the freely available [PCIbex Farm](https://farm.pcibex.net/). It is easy to sync this GitHub repostitory onto the PCIbex Farm, by following the instructions written in the [how-to on the PCIbex website](https://doc.pcibex.net/how-to-guides/github/)). Note that there are two branches in this repository: One for the fixation task (Experiment 1 in the paper) and one for the web-based replication of Dijkgraaf, Hartsuiker, and Duyck's experiment (Experiment 2 in the paper). To sync these brances, copy this link: [https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git](https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git) into the PCIbex Farm, and select the branch of the experiment you wish to sync. 
+These scripts can be run in the freely available [PCIbex Farm](https://farm.pcibex.net/). It is easy to sync this GitHub repostitory onto the PCIbex Farm:
+1. Go to https://farm.pcibex.net/ and create a free account (optional, but needed to save the experiment).
+2. Create a new project 
+3. In the panel on the right, select 'Git Sync'
+4. Paste the following URL into the Git URL: (https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git)
+5. Select the branch you wish to import (Experiment 1 or Experiment 2)
+6. Accept to replacing existing files.
+7. And you're all set! Sometimes, it's needed to refresh the page so that the new main.js files appers. 
 
-You can also explore the files within the different branches by selecting a different branch in the drop-down menu above (which now says 'main').
+(These instructions are also written in the [how-to on the PCIbex website](https://doc.pcibex.net/how-to-guides/github/)). 
+
+Note that there are two branches in this repository: One for the fixation task (Experiment 1 in the paper) and one for the web-based replication of Dijkgraaf, Hartsuiker, and Duyck's experiment (Experiment 2 in the paper). To sync these brances, copy this link: [https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git](https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git) into the PCIbex Farm, and select the branch of the experiment you wish to sync. 
+
+You can also explore the files within the different branches by selecting a different branch in the drop-down menu above (which now says 'main'). This way, you can also download the code folders from GitHub.
 
 ## Further info
 The scripts in this repository are most recently tested in PCIbex 2.0. Note that the calibration procedure in this newer version of PCibex is slightly different than described in the paper. However, the underlying logic of the calibration is similar. I cannot garantuee that I will maintain the script up-to-date to be used in the later versions of PCIbex. Nevertheless, if you have any questions or spot any bugs, please get in touch via <mieke.slim@ugent.be>, and I will do my best to troubleshoot. 

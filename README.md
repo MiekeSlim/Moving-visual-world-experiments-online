@@ -14,7 +14,7 @@ These scripts can be run in the freely available [PCIbex Farm](https://farm.pcib
 4. Paste the following URL into the Git URL: https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git
 5. Select the branch you wish to import (Experiment 1 or Experiment 2)
 6. Accept to replacing existing files.
-7. And you're all set! Sometimes, it's needed to refresh the page so that the new main.js files appers. 
+7. And you're all set! Sometimes, it's needed to refresh the page to make the new main.js files appear. 
 
 (These instructions are also written in the [how-to on the PCIbex website](https://doc.pcibex.net/how-to-guides/github/)). 
 

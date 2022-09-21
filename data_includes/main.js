@@ -275,3 +275,5 @@ newTrial("Final",
         .print("22vw", "20vh") 
     ,     
     newButton("waitforever").wait() // Not printed: wait on this page forever
+)
+         

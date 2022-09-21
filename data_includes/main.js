@@ -25,10 +25,12 @@ PennController("Checks",
         .settings.before( getButton("yesConsent") )
         .print("20vw" , "32vh")
     ,
+    // A selector element is used to check which of the two buttons is selected.
     newSelector("yesnoConsent")
         .settings.add( getButton("yesConsent") , getButton("noConsent"))
         .wait()
     ,
+    // Check which button was selected.            
     getSelector("yesnoConsent")
         .settings.log()
         .test.selected(getButton("yesConsent") )
@@ -41,7 +43,7 @@ PennController("Checks",
                 .wait() // The button is not printed, so they're stuck on this page.
         )         
     ,    
-    // Does the participant use Google Chrome?   
+    // Does the participant use Google Chrome?  This chunk of script works the same as the previous. 
     newText("Chrome", "This study only works well if you are using the Google Chrome browser on a laptop or desktop computer (so not on a mobile phone or tablet). Are you currently using <b> Google Chrome Desktop </b>? <br><br>")
     ,
     newCanvas( "ChromeCanvas", "60vw" , "20vh")
@@ -72,7 +74,7 @@ PennController("Checks",
         )      
 )
 
-// Welcome page
+// Here, we present a brief welcome page.
 PennController("Welcome",
     newText("WelcomeText", "<p>Welcome and thank you for participating in this experiment! </p><p> </p><p> Cognitive scientists often record eye movements to study human behaviour, because eye movements tell a lot about how we divide our attention and how we make decisions. Typically, cognitive scientists use expensive eye-tracking devices to record where people are looking on a computer screen. The aim of this experiment is to test whether we could also use webcams to achieve this goal. </p><p> </p><p> The task is very simple, and should take you roughly 5-10 minutes to complete: A cross (+) will appear at various positions on your screen. Please look closely at each cross that appears, untill it disappears. We will <b> not </b> collect any video data or any other type of data that may reveal your identity: We only collect data on where on the screen your eyes are looking during the experiment. <br> <br>  Because we will use your webcam to follow your eye movements during this task, it is important that you are in a well-lit and quiet environment. Please turn off your mobile phone or other devices that may distract you during this task. Also, please close other websites that you may have open.</p> <p> If you have any questions about this experiment, feel free to get in touch with me (Mieke Slim) via email: mieke.slim@ugent.be</p>")
     ,           
@@ -100,7 +102,7 @@ PennController("Consent",
             .wait()
 )
 
-//Webcam set-up and calibration
+// Instructions on the webcam set-up and the calibration procedure. 
 newTrial("WebcamSetUp",
     newText("WebcamInstructions", "<p> Before the task begins, we need to calibrate your webcam so the experiment can follow your eye movements. On the next page, a calibration procedure will start. First, you will see the webcam recording on the top left corner of your screen. Please make sure your face is fully visible, and that you sit centrally in front of your webcam by following these instructions:.</p> <p> The next pages will appear in fullscreen. <b> Please do not close the fullscreen for the remainder of this experiment </b></p>")
     ,
@@ -120,7 +122,7 @@ newTrial("WebcamSetUp",
     fullscreen()
 )
 
-// In this section, we prompt the calibration procedure. NOTE: The calibration procedure is different than described than in the paper, because the PCIbex developers have updated this procedure since then. The functioning of the calibration procedure is still more-or-less the same. 
+// We prompt the calibration procedure. NOTE: The calibration procedure is different than described than in the paper, because the PCIbex developers have updated this procedure since then. The functioning of the calibration procedure is still more-or-less the same. 
 newTrial("CalibrationSetUp",
     newText("CalibrationInstructions", "<p>In the calibration procedure, you will see nine circles appear on your screen. Please look at these circles closely as they appear untill they disappear. <br><br> At the end, a new circle will appear in the middle of the screen. Please look at this circle for three seconds. In these three seconds, the webcam eyetracker checks whether it's well calibrated.</p> <p> In case calibration fails, the procedure will be repeated. </p>")
     ,

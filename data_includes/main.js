@@ -1,9 +1,6 @@
 PennController.ResetPrefix(null) // Shorten command names (keep this)
 PennController.DebugOff() // Don't show the debug window
 
-// The resources are hosted on a distant server. NOTE: If possible, it is recommended to store your resources in ZIP files (for information see: https://doc.pcibex.net/how-to-guides/managing-resources/), unfortunately, my university's servers do not allow this.
-AddHost("https://users.ugent.be/~mslim/VW_DWR_Stimuli/images/");
-
 // PHP script that receives, stores (and will also output) the eye-tracking data
 //EyeTrackerURL("PUT YOUR OWN URL HERE")
 
@@ -89,9 +86,9 @@ PennController("Welcome",
         .wait()
 )
 
-// Consent page. You can replace this with your own. 
+// Consent page (this is a default UGent one)
 PennController("Consent",
-    newText("ConsentText", "<p>This experiment has been approved by the Ethical Comittee from the Faculty of Psychology and Educational Sciences at Ghent University. We request your consent for participation in this experiment. Therefore, please read the following carefully: </p > <p>I declare that I, as a participant in a research project in the Department of Experimental Psychology at Ghent University:<br><br> <ol> <li> have been informed about the research objectives, the questions and the tasks that I will encounter during the research and that I was given the opportunity to receive further information if desired<br><br> </li><li> will participate out of free will in the research project <br><br> </li><li> am aware that the researchers do not collect any personal information that may be used to identify my identity (such as video recordings). All the data that will be collected is completely anonymized; <br><br> </li><li> give informed consent to the researchers to store, process, and report my data in anonymized form <br><br> </li><li> am aware of the option to stop my participation in this research at any moment in time without having to provide a reason; <br><br> </li><li> know that participating or stopping my participation in the research has no negative consequences of any kind for me (apart from not receiving my payment via Prolific) <br><br> </li><li> am aware of the option to ask the researcher(s) for a summary of the results after the study is finished and the results have been known; <br><br> </li><li> agree that my data may be used for further analysis by other researchers after complete anonymization; <br><br> </li><li> am aware that Ghent University is the responsible entity with regards to the personal information collected during the study. I am also aware that the data protection officer can give me more information about the protection of my personal information. Contact: Hanne Elsen (privacy@ugent.be).</li> </ol> <br>In case you give your informed consent to participate in this study, please click on the button below. If you do not give your informed consent, please close this experiment. </p>")
+    newText("ConsentText", "<p>This experiment has been approved by the Ethical Comittee from the Faculty of Psychology and Educational Sciences at Ghent University. We request your consent for participation in this experiment. Therefore, please read the following carefully: </p > <p>I declare that I, as a participant in a research project in the Department of Experimental Psychology at Ghent University:<br><br> <ol> <li> have been informed about the research objectives, the questions and the tasks that I will encounter during the research and that I was given the opportunity to receive further information if desired<br><br> </li><li> will participate out of free will in the research project <br><br> </li><li> am aware that the researchers do not collect any personal information that may be used to identify my identity (such as video recordings). All the data that will be collected is completely anonymized; <br><br> </li><li> give informed consent to the researchers to store, process, and report my data in anonymized form <br><br> </li><li> am aware of the option to stop my participation in this research at any moment in time without having to provide a reason; <br><br> </li><li> know that participating or stopping my participation in the research has no negative consequences of any kind for me (apart from not receiving my payment via Prolific) <br><br> </li><li> am aware of the option to ask the researcher(s) for a summary of the results after the study is finished and the results have been known; <br><br> </li><li> agree that my data may be used for further analysis by other researchers after complete anonymization; <br><br> </li><li> am aware that Ghent University is the responsible entity with regards to the personal information collected during the study. I am also aware that the data protection officer can give me more information about the protection of my personal information.</li> </ol> <br>In case you give your informed consent to participate in this study, please click on the button below. If you do not give your informed consent, please close this experiment. </p>")
     ,
     newCanvas( "myCanvas", "60vw" , "60vh")
         .settings.add(0,0, getText("ConsentText"))
@@ -143,7 +140,7 @@ newTrial("CalibrationSetUp",
 
 // Present the task instructions.
 newTrial("Instructions", 
-    newText("TaskInstructions", "<p>You're all set to start the experiment! The task is very simple: Please look closely at all crosses that appear on the screen untill they disappear. <br> <br> You don't have to do anything else during this task, but every now and then a button will appear in the middle of your screen. Click on this button and look at the center of your screen for three seconds. The webcam will check whether it is still calibrated. If it is, the next trial will automatically start. Otherwise, the calibration procedure will be repeated. <br><br> The task should take roughly 5 minutes.</p>")
+    newText("TaskInstructions", "<p>You're all set to start the experiment! The task is very simple: Please look closely at all crosses that appear on the screen untill they disappear. <br> <br> You don't have to do anything else during this task, but every now and then a green calibration circle will appear in the middle of your screen. When this happens, look at the circle for three seconds. The webcam will check whether it is still calibrated. If it is, the next trial will automatically start. Otherwise, the calibration procedure will be repeated. <br><br> The task should take roughly 5 minutes.</p>")
     ,
     newCanvas("myCanvas", "60vw" , "60vh")
         .settings.add(0,0, getText("TaskInstructions"))
@@ -151,12 +148,12 @@ newTrial("Instructions",
     ,
     newButton("Go to the first trial").print("center at 50vw", "80vh").wait()
     ,
-    newVar("trialsLeftbeforeCalibration", 13)
+    newVar("trialsLeftbeforeCalibration", 13) // After 13 trials, we will do a calibration check. Here, we define a variable that keeps track of the number of trials remaining until a calibration check is prompted. 
     .global()   
 )
 
 // Start the trials of the experiment
-PennController.Template("FixationTrials.csv",
+PennController.Template("FixationTrials.csv", // Trials are read of a csv file
     row => PennController("Trials", 
         // The callback commands lets us log the X and Y coordinates of the estimated gaze-locations at each recorded moment in time (Thanks to Jeremy Zehr for writing this function)
             newEyeTracker("tracker",1).callback( function (x,y) {
@@ -170,55 +167,30 @@ PennController.Template("FixationTrials.csv",
                 getEyeTracker("tracker")._element.counts._Ys = [];
             }).call()  
             ,
-            getVar("trialsLeftbeforeCalibration")
-                .test.is(0)
+            getVar("trialsLeftbeforeCalibration") // Do we need to do a calibration check?
+                .test.is(0)  // if the trialsLeftbeforeCalibration variable (initially defined on line 151) is zero, then the script prompts a calibration check. 
                 .success(
-                    newFunction( ()=>{
-                        $("body").css({
-                        width: '100vw',
-                        height: '100vh',
-                        cursor: 'default'
-                           });
-                    }).call()
-                    ,
                     getEyeTracker("tracker").calibrate(5)
                         .log()
                     ,
-                    newFunction( ()=>{
-                        $("body").css({
-                            width: '100vw',
-                            height: '100vh',
-                            cursor: 'none'
-                           });
-                        }).call()
-                    ,
                     getVar("trialsLeftbeforeCalibration")
-                                .set(13)
+                                .set(13) // once the calibration check has been done, we reset the trialsLeftbeforeCalibration variable at 13 again.
                     )
-        ,   
-        // Hide the cursor
-        newFunction( ()=>{
-            $("body").css({
-            width: '100vw',
-            height: '100vh',
-            cursor: 'none'
-           });
-        }).call()
         ,
-        newText("fixationText", "<p>+</p>")
+        newText("fixationText", "<p>+</p>") // Define the fixation cross
                     .settings.css("font-family", "avenir")
                     .settings.color("black")
         ,
-        newCanvas("FixationCross", "15vh", "15vh") // Tracked canvases are slighlty larged than the fixation cross (note that we use 'vh' to determine the canvas width as well, so it's a square)
+        newCanvas("FixationCross", "15vh", "15vh") // This is the center fixation canvas, presented at the start of each trial. 
             .add("center at 50%" , "middle at 50%" , getText("fixationText").css("font-size", "5vh"))
             .print("center at 50%" , "middle at 50%")
         ,
-        newTimer(500)
+        newTimer(500) // Wait for 500 ms
             .start()
             .wait()
         ,
-        // Canvas that contains the target stimulus                  
-        newCanvas("trackedCanvas", "10vh", "10vh") 
+        // And print the canvas that contains the target stimulus                  
+        newCanvas("trackedCanvas", "10vh", "10vh") // The canvas is slightly smaller than the fixation cross. The fixation cross made weird jumpy movements otherwise. 
             .add( "center at 50%" , "middle at 50%" , getText("fixationText").css("font-size", "15vh"))
             .print(row.X_position, row.Y_position)
         ,
@@ -234,22 +206,27 @@ PennController.Template("FixationTrials.csv",
         ,
         newCanvas("Bottomright", "50vw", "50vh")  
             .print( "center at 75vw" , "middle at 75vh" )
-        ,                  
+        ,               
+        // And launch the eyetracker   
         getEyeTracker("tracker")  
             // The eyetracker tracks the canvases: The "trackedCanvas" contains the target stimulus, the other four canvases specify the four quadrants on the screen.              
             .add(getCanvas("trackedCanvas"), getCanvas("Topleft"), getCanvas("Topright"), getCanvas("Bottomleft"), getCanvas("Bottomright"))  
             .start()
             .log()                
         ,
+        // Wait for 1500 ms
         newTimer(1500)
             .start()
             .wait()
         ,
-        getEyeTracker("tracker").stop() // Stop now to prevent collecting unnecessary data
+        // And stop the eyetracker to prevent collecting unnecessary data
+        getEyeTracker("tracker").stop() 
         ,
+        // Trial end: Substract one from the current trialsLeftbeforeCalibration variable
         getVar("trialsLeftbeforeCalibration")
             .set( v => v-1)           
     )   
+    // Save the required information in the results file
     .log("Position", row.Position)
     .log("Xpos.absolute", row.X_position) // X position measured in pixels
     .log("Ypos.absolute", row.Y_position) // Y position measured in pixess
@@ -261,7 +238,7 @@ PennController.Template("FixationTrials.csv",
     .log( "ViewportHeight", window.innerHeight ) // Screensize: heigth          
 )
 
-// Post-experimental questionnaire
+// Present a brief post-experimental questionnaire
 PennController("QuestionnairePage",
           //show cursor     
    newFunction( ()=>{
@@ -272,7 +249,7 @@ PennController("QuestionnairePage",
        });
     }).call()
     ,                  
-    newHtml("Questionnaire", "Questionnaire.html")
+    newHtml("Questionnaire", "Questionnaire.html") // Questionnaire is presented as an HTML file. 
         .settings.log()
         .print("30vw","15vh")
     ,
@@ -291,11 +268,10 @@ PennController.SendResults("Send");
 newTrial("Final",    
     exitFullscreen()
     ,
-    newText("Final","This is the end of the experiment. <strong> Please verify your participation on Prolific by clicking on this link: <p><a href='https://app.prolific.co/submissions/complete?cc=66C714D9'>https://app.prolific.co/submissions/complete?cc=66C714D9</a></p> </strong> <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
+    newText("Final","This is the end of the experiment. <strong> <br> Thank you for your participation! If you have any questions or if you want to know more about the results, please get in touch with me via mieke.slim@ugent.be")
     ,
     newCanvas("myCanvas", "60vw" , "60vh")
         .settings.add(0,0, getText("Final"))
         .print("22vw", "20vh") 
     ,     
     newButton("waitforever").wait() // Not printed: wait on this page forever
-)

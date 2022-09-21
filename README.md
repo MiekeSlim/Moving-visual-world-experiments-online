@@ -1,4 +1,4 @@
-# Description of this repository
+# How to use this repository?
 
 Experiment scripts accompanying the paper *Moving visual world experiments online? A web-based replication of Dijkgraaf, Hartsuiker, and Duyck (2017) using PCIbex and WebGazer.js* by Mieke Sarah Slim and Robert J. Hartsuiker.
 

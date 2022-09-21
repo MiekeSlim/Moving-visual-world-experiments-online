@@ -1,12 +1,15 @@
 PennController.ResetPrefix(null) // Shorten command names (keep this)
 PennController.DebugOff() // Don't show the debug window
 
-// Resources are hosted on a distant server
-AddHost("https://users.ugent.be/~mslim/VW_Stimuli_onserver/"); // I actually recommend hosting them as ZIP files instead, see: https://doc.pcibex.net/how-to-guides/managing-resources/
+// Resources are hosted on a distant server. 
+//NOTE: It is highly recommended to store the resources in ZIP files (https://doc.pcibex.net/how-to-guides/managing-resources/). Unfortunately, the UGent servers do not allow this functionality.
+AddHost("https://users.ugent.be/~mslim/VW_Stimuli_onserver/");
 
-// PHP script that receives, stores (and will also output) the eye-tracking data
-EyeTrackerURL("DUMMY"); // Please see PCIbex' how-to guide on how to set up a server: https://doc.pcibex.net/how-to-guides/collecting-eyetracking-data/
+// PHP script that receives, stores (and will also output) the eye-tracking data (see https://doc.pcibex.net/how-to-guides/collecting-eyetracking-data/)
+// EyeTrackerURL("PUT YOUR OWN URL HERE")
 
+// We don't want to show the progress bar in this experiment. We can hide the progress bar (which is shown by default) with the following code:
+var showProgressBar = false;
 // Sequence of the elements in the experiment
 Sequence("Preload", "Loading", "WebcamCheck", "ChromeCheck", "L1Check", "Welcome", "Consent", "ProlificID_trial", "WebcamSetUp", "FailedCalibrationLink", "AudioSetUp", "AudioCheck", "Instructions", "PractiseSession", "EndOfPractise", "Counter", randomize("Block1"), "BlinkBreak", "AudioSetUp2", randomize("Block2"), "LanguageQuestionnairePage", "WebcamQuestionnairePage", "Send", "FinalPage")
 

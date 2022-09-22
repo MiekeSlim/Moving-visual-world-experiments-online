@@ -9,10 +9,10 @@ The experiments are programmed and implemented in *PennController for IBEX* (*PC
 These scripts can be run in the freely available [PCIbex Farm](https://farm.pcibex.net/). It is easy to sync this GitHub repostitory onto the PCIbex Farm:
 
 1. Go to https://farm.pcibex.net/ and create a free account (optional, but needed to save the experiment).
-2. Create a new project 
-3. In the panel on the right, select 'Git Sync'
-4. Paste the following URL into the Git URL: https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git
-5. Select the branch you wish to import (Experiment 1 or Experiment 2)
+2. Create a new project.
+3. In the panel on the right, select 'Git Sync'.
+4. Paste the following URL into the Git URL: https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git.
+5. Select the branch you wish to import (Experiment 1 or Experiment 2).
 6. Accept to replacing existing files.
 7. And you're all set! Sometimes, it's needed to refresh the page to make the new main.js files appear. 
 

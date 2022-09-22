@@ -18,7 +18,7 @@ These scripts can be run in the freely available [PCIbex Farm](https://farm.pcib
 
 (These instructions are also written in the [how-to on the PCIbex website](https://doc.pcibex.net/how-to-guides/github/)). 
 
-*Note that there are two branches in this repository*: One for the fixation task (Experiment 1 in the paper) and one for the web-based replication of Dijkgraaf, Hartsuiker, and Duyck's experiment (Experiment 2 in the paper). To sync these brances, copy this link: [https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git](https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git) into the PCIbex Farm, and select the branch of the experiment you wish to sync. 
+**Note that there are two branches** in this repository: One for the fixation task (Experiment 1 in the paper) and one for the web-based replication of Dijkgraaf, Hartsuiker, and Duyck's experiment (Experiment 2 in the paper). To sync these brances, copy this link: [https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git](https://github.com/MiekeSlim/Moving-visual-world-experiments-online.git) into the PCIbex Farm, and select the branch of the experiment you wish to sync. 
 
 You can also explore the files within the different branches by selecting a different branch in the drop-down menu above (which now says 'main'). This way, you can also download the code folders from GitHub.
 
